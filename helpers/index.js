@@ -1,0 +1,1 @@
+export const isObjectEmptyOrNull = (object) => (!object || Object.keys(object).length === 0)
