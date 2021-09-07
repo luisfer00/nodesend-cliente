@@ -10,6 +10,7 @@ import Alerta from "../components/Alerta";
 import { iniciarSesion } from "../redux/actions/auth";
 
 const Login = ({ serverURL }) => {
+  const [loading, setLoading] = useState(false);
   const { mensaje, error, autenticado } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -30,7 +31,7 @@ const Login = ({ serverURL }) => {
         .required("El password es obligatorio"),
     }),
     onSubmit: (value) => {
-      dispatch(iniciarSesion(serverURL, value));
+      dispatch(iniciarSesion(serverURL, value, setLoading));
     },
   });
 
@@ -100,9 +101,12 @@ const Login = ({ serverURL }) => {
                   {printError(formik.touched.password, formik.errors.password)}
                 </div>
                 <input
-                  className="bg-red-500 hover:bg-gray-900 cursor-pointer w-full p-2 text-white uppercase font-bold rounded"
+                  className={`bg-red-500 hover:bg-gray-900 cursor-pointer w-full p-2 text-white uppercase font-bold rounded ${
+                    loading && "opacity-60 cursor-not-allowed"
+                  }`}
                   type="submit"
-                  value="Iniciar Sesión"
+                  disabled={loading}
+                  value={loading ? "Cargando..." : "Iniciar Sesión"}
                 />
               </form>
             </div>
@@ -122,6 +126,5 @@ export async function getStaticProps() {
     },
   };
 }
-
 
 export default Login;

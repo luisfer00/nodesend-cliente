@@ -10,6 +10,7 @@ import { registrarUsuario, usuarioAutenticado } from "../redux/actions/auth";
 import { useRouter } from "next/router";
 
 const CrearCuenta = ({ serverURL }) => {
+  const [loading, setLoading] = useState(false);
   const [submittedForm, setSubmittedForm] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
@@ -39,7 +40,7 @@ const CrearCuenta = ({ serverURL }) => {
         .required("El password es obligatorio"),
     }),
     onSubmit: (value) => {
-      dispatch(registrarUsuario(serverURL, value));
+      dispatch(registrarUsuario(serverURL, value, setLoading));
       setSubmittedForm(true);
     },
   });
@@ -123,9 +124,10 @@ const CrearCuenta = ({ serverURL }) => {
                 {printError(formik.touched.password, formik.errors.password)}
               </div>
               <input
-                className="bg-red-500 hover:bg-gray-900 cursor-pointer w-full p-2 text-white uppercase font-bold rounded"
+                className={`bg-red-500 hover:bg-gray-900 cursor-pointer w-full p-2 text-white uppercase font-bold rounded ${loading && "opacity-60 cursor-not-allowed"}`}
                 type="submit"
-                value="Crear Cuenta"
+                disabled={loading}
+                value={loading ? "Cargando..." : "Crear Cuenta"}
               />
             </form>
           </div>
@@ -144,6 +146,5 @@ export async function getStaticProps() {
     },
   };
 }
-
 
 export default CrearCuenta;
